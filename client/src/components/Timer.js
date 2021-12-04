@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-export default function Timer({ startingSeconds }) {
+export default function Timer({ startingSeconds, onEnd }) {
   const [time, setTime] = useState()
   const secondsTimer = useRef()
   
@@ -10,7 +10,10 @@ export default function Timer({ startingSeconds }) {
   }, [startingSeconds])
 
   useEffect(() => {
-    if (time <= 0) clearInterval(secondsTimer.current)
+    if (time <= 0) {
+      clearInterval(secondsTimer.current)
+      onEnd()
+    }
   }, [time])
 
   return (

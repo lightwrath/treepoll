@@ -1,41 +1,40 @@
 import React, { useState, useEffect } from 'react'
 import WindowHeader from "../components/WindowHeader"
-import PollSelection from "../components/PollSelection"
-import Timer from "../components/Timer"
+import PollingSegment from "../components/PollingSegment"
 import { fetchSequenceData } from "../api/sequence"
 import { initialiseEngine } from "../utils/sequenceEngine"
 
 export default function SessionViewer() {
-  const [sequenceSegment, setSequenceSegment] = useState(null)
-  const [selected, setSelected] = useState(null)
+  const [sequenceFeed, setSequenceFeed] = useState([])
 
   useEffect(() => {
     async function startSequenceEngine() {
-      const sessionId = window.location.pathname.split('/')[1]
-      const sequence = await fetchSequenceData(sessionId)
-      setSequenceSegment(await initialiseEngine(sessionId, sequence))
-      document.body.addEventListener("sequenceEngine", event => setSequenceSegment(event.detail))
+      const sequence = await fetchSequenceData()
+      setSequenceFeed([await initialiseEngine(sequence)])
+      document.body.addEventListener("sequenceEngine", event => setSequenceFeed(prev => [ event.detail, ...prev ]))
     }
     startSequenceEngine()
   }, [])
 
-  if (sequenceSegment) return (
-    <div style={{width: "800px"}}>
-      <WindowHeader titleText={sequenceSegment.title}/>
-      <p>{sequenceSegment.description}</p>
-      {sequenceSegment.type === "poll" && sequenceSegment.options && (
-        <PollSelection
-          options={sequenceSegment.options}
-          selected={selected}
-          onSelection={selection => setSelected(selection)}
-        />
-      )}
-      <Timer startingSeconds={sequenceSegment.time || 0} />
-    </div>
-  )
-  return (
+  if (sequenceFeed.length === 0) return (
     <div>
       loading...
     </div>
   )
+
+  return sequenceFeed.map(segment => {
+    if (segment.type === "poll") return (
+      <div style={{width: "800px"}}>
+        <PollingSegment
+          segmentData={segment}
+        />
+      </div>
+    )
+    return (
+      <div style={{width: "800px"}}>
+        <WindowHeader titleText={segment.title}/>
+        <p>{segment.description}</p>
+      </div>
+    )
+  })
 }
