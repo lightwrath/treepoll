@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import WindowHeader from "../components/WindowHeader"
 import PollSelection from "../components/PollSelection"
+import Timer from "../components/Timer"
 import { fetchSequenceData } from "../api/sequence"
 import { initialiseEngine } from "../utils/sequenceEngine"
 
 export default function SessionViewer() {
   const [sequenceSegment, setSequenceSegment] = useState(null)
+  const [selected, setSelected] = useState(null)
 
   useEffect(() => {
     async function startSequenceEngine() {
@@ -21,10 +23,14 @@ export default function SessionViewer() {
     <div style={{width: "800px"}}>
       <WindowHeader titleText={sequenceSegment.title}/>
       <p>{sequenceSegment.description}</p>
-      <PollSelection
-        options={sequenceSegment.options}
-        onSelection={e => console.log(e)}
-      />
+      {sequenceSegment.type === "poll" && sequenceSegment.options && (
+        <PollSelection
+          options={sequenceSegment.options}
+          selected={selected}
+          onSelection={selection => setSelected(selection)}
+        />
+      )}
+      <Timer startingSeconds={sequenceSegment.time || 0} />
     </div>
   )
   return (

@@ -5,8 +5,8 @@ import config from "../config"
 export default function Button({ style, onClick, children }) {
   return (
     <RebassButton
-      bg={config.action}
       sx={{
+        backgroundColor: config.action,
         ':hover': { backgroundColor: config.highlight },
         ...style
       }}
