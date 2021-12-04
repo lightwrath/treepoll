@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2&display=swap');
+
 html body {
   margin: 0;
   padding: 0;
@@ -11,4 +14,6 @@ html body {
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
+  color: #E8F1F2;
+  font-family: 'Baloo Bhaijaan 2';
 }
