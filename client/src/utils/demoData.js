@@ -1,4 +1,12 @@
 export const demoSequence = {
+  default: {
+    triggers: [
+      "betting allin",
+      "stop"
+    ],
+    title: "Waiting for Dealer",
+    description: "Starting soon",
+  },
   betting: {
     type: "poll",
     triggers: [
@@ -40,14 +48,13 @@ export const demoSequence = {
     type: "button",
     title: "Stop"
   },
-  end: {
-    type: "event",
-    triggers: [
-      "stop",
-      "betting all-in"
-    ],
-    action: "exit"
-  }
 }
 
 export const demoServerUnitTime = Date.now() + (Math.floor(Math.random() * (1200000 - 0 + 1) - 600000))
+
+export const demoServerEvents = () => {
+  return [{
+    id: "start",
+    time: Date.now() - 1000
+  }]
+}

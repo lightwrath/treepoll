@@ -1,4 +1,4 @@
-import { demoSequence, demoServerUnitTime } from "../utils/demoData"
+import { demoSequence, demoServerUnitTime, demoServerEvents } from "../utils/demoData"
 
 let isDemoMode = false
 
@@ -11,4 +11,8 @@ export async function fetchSequenceData(sessionId) {
 
 export async function fetchServerUnixTime() {
   if (isDemoMode) return demoServerUnitTime
+}
+
+export async function fetchServerEvents(sessionId) {
+  if (sessionId === "demo") return demoServerEvents()
 }
