@@ -6,8 +6,16 @@ let cachedEventList = []
 let queuedTrigger
 let unixTimeOffset = 0
 
+function parseSequenceData(sequence) { //Could be in another file
+  const parsedSequence = sequence
+  Object.keys(parsedSequence).forEach(key => {
+    parsedSequence[key].id = key
+  })
+  return parsedSequence
+}
+
 export async function initialiseEngine(sequenceImport) {
-  sequenceData = sequenceImport
+  sequenceData = parseSequenceData(sequenceImport)
   console.log("Set initial sequence data", sequenceData)
   const serverTime = await fetchServerUnixTime()
   unixTimeOffset = serverTime - Date.now()

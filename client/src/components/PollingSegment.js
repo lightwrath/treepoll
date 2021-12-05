@@ -14,25 +14,25 @@ export default function PollingSegment({ segmentData }) {
       <p>{segmentData.description}</p>
       {segmentData.options && (
         <div>
-          {Object.keys(segmentData.options).map(key => (
+          {segmentData.options.map(option => (
             <Button
-              key={key}
+              key={option}
               style={{
-                ...(selected === key && { backgroundColor: config.highlight }),
+                ...(selected === option && { backgroundColor: config.highlight }),
                 margin: "20px 0px",
                 width: '100%',
                 display: 'block'
               }}
-              onClick={event => setSelected(key)}
+              onClick={event => setSelected(option)}
             >
-              {segmentData.options[key]}
+              {option}
             </Button>
           ))}
         </div>
       )}
       <Timer 
         startingSeconds={segmentData.time || 0} 
-        onEnd={async () => await clientReturnChannel(segmentData.key + " " + selected)}
+        onEnd={async () => await clientReturnChannel(segmentData.id + " " + selected)}
       />
     </div>
   )

@@ -1,35 +1,23 @@
 export const demoSequence = {
   default: {
-    key: "default",
     triggers: [
-      "betting allIn",
+      "betting All-in",
       "stop"
     ],
     title: "Waiting for Dealer",
     description: "Starting soon",
   },
   betting: {
-    key: "betting",
     type: "poll",
     triggers: [
-      "playeractions raise"
+      "playeractions Raise"
     ],
     title: "Betting",
     description: "Place your bets now",
     time: 15,
-    options: {
-      five: "5",
-      eight: "8",
-      thirteen: "13",
-      twentyOne: "21",
-      thirtyFour: "34",
-      fiftyfive: "55",
-      eightynine: "89",
-      allIn: "All-in"
-    }
+    options: ["5", "8", "13", "21", "34", "55", "89", "All-in"],
   },
   playeractions: {
-    key: "playeractions",
     type: "poll",
     triggers: [
       "start"
@@ -37,19 +25,13 @@ export const demoSequence = {
     title: "Player Actions",
     description: "What do?",
     time: 20,
-    options: {
-      check: "Check",
-      raise: "Raise",
-      fold: "Fold"
-    }
+    options: ["Check", "Raise", "Fold"]
   },
   start: {
-    key: "start",
     type: "button",
     title: "Start"
   },
   stop: {
-    key: "stop",
     type: "button",
     title: "Stop"
   },
@@ -63,7 +45,19 @@ let demoEventList = [{
 }]
 export function demoServerEvents(eventToAdd) {
   if (eventToAdd) {
-    demoEventList = [{ eventId: eventToAdd, time: Date.now() }, ...demoEventList]
+    demoEventList = [
+      {
+        eventId: eventToAdd,
+        details: {
+          [eventToAdd]: 1024,
+          "Other Option": 512,
+          "Less Popular Option": 256,
+          "Undecided": 128
+        },
+        time: Date.now()
+      },
+      ...demoEventList
+    ]
   }
   return demoEventList
 }

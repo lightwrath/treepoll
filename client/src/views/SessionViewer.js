@@ -14,7 +14,7 @@ export default function SessionViewer() {
       document.body.addEventListener("sequenceEngine", event => setSequenceFeed(prev => [ 
         {
           ...event.detail, 
-          id: [event.detail.key] + sequenceFeed.length
+          uid: [event.detail.id] + prev.length
         },
         ...prev 
     ]))
@@ -29,7 +29,7 @@ export default function SessionViewer() {
   )
 
   return sequenceFeed.map(segment => (
-    <div style={{width: "800px"}} key={segment.id}>
+    <div style={{width: "800px"}} key={segment.uid}>
       {segment.type === "poll" && (
         <PollingSegment
           segmentData={segment}
