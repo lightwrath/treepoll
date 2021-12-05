@@ -15,12 +15,9 @@ export async function fetchServerUnixTime() {
 }
 
 export async function fetchServerEvents() {
-  if (getSessionId() === "demo") return demoServerEvents
+  if (getSessionId() === "demo") return demoServerEvents()
 }
 
 export async function postSelection(event) {
-  if (getSessionId() === "demo") return [
-    { eventId: event, time: Date.now() },
-    ...demoServerEvents
-  ]
+  if (getSessionId() === "demo") return demoServerEvents(event)
 }

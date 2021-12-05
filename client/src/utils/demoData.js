@@ -1,15 +1,15 @@
 export const demoSequence = {
   default: {
-    id: "default",
+    key: "default",
     triggers: [
-      "betting allin",
+      "betting allIn",
       "stop"
     ],
     title: "Waiting for Dealer",
     description: "Starting soon",
   },
   betting: {
-    id: "betting",
+    key: "betting",
     type: "poll",
     triggers: [
       "playeractions raise"
@@ -29,7 +29,7 @@ export const demoSequence = {
     }
   },
   playeractions: {
-    id: "playeractions",
+    key: "playeractions",
     type: "poll",
     triggers: [
       "start"
@@ -44,12 +44,12 @@ export const demoSequence = {
     }
   },
   start: {
-    id: "start",
+    key: "start",
     type: "button",
     title: "Start"
   },
   stop: {
-    id: "stop",
+    key: "stop",
     type: "button",
     title: "Stop"
   },
@@ -57,7 +57,13 @@ export const demoSequence = {
 
 export const demoServerUnitTime = Date.now() + (Math.floor(Math.random() * (1200000 - 0 + 1) - 600000))
 
-export const demoServerEvents = [{
+let demoEventList = [{
   eventId: "start",
   time: Date.now() - 1000
 }]
+export function demoServerEvents(eventToAdd) {
+  if (eventToAdd) {
+    demoEventList = [{ eventId: eventToAdd, time: Date.now() }, ...demoEventList]
+  }
+  return demoEventList
+}

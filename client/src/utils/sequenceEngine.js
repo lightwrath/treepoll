@@ -16,44 +16,40 @@ export async function initialiseEngine(sequenceImport) {
   return sequenceData.default
 }
 
-export async function returnSegmentResult(segment, result) {
-  const payload = segment.id + " " + result
-  console.log("User returned results", payload)
-  const updatedList = await postSelection(payload)
-  if (cachedEventList.length !== updatedList.length) {
-    console.log("New events found", updatedList)
-    cachedEventList = updatedList
-    queuedTrigger = cachedEventList[0].eventId
-    evaluateTriggers()
-  }
+export async function clientReturnChannel(event) {
+  console.log("User returned results", event)
+  handleEventListUpdates(await postSelection(event))
 }
 
 function serverEventsCycle() {
   console.log("Server events polling every 10 seconds started")
   setInterval(async () => {
     console.log("Checking server events")
-    const updatedList = await fetchServerEvents(getSessionId())
-    if (cachedEventList.length !== updatedList.length) {
-      console.log("New events found", updatedList)
-      cachedEventList = updatedList
-      queuedTrigger = cachedEventList[0].eventId
-      evaluateTriggers()
-    }
+    handleEventListUpdates(await fetchServerEvents(getSessionId()))
   }, 10000)
+}
+
+function handleEventListUpdates(serverList) {
+  if (cachedEventList.length !== serverList.length) {
+    console.log("New events found", serverList)
+    cachedEventList = serverList
+    queuedTrigger = cachedEventList[0].eventId
+    evaluateTriggers()
+  }
 }
 
 function evaluateTriggers() {
   Object.keys(sequenceData).forEach(key => {
     if (sequenceData[key].triggers && sequenceData[key].triggers.includes(queuedTrigger)) {
       console.log("Triggering", sequenceData[key])
-      emitEvent(sequenceData[key])
+      pushToClientFeed(sequenceData[key])
       queuedTrigger = null
       return sequenceData[key]
     }
   })
 }
 
-function emitEvent(content) {
+function pushToClientFeed(content) {
   const event = new CustomEvent("sequenceEngine", {
     detail: content
   })

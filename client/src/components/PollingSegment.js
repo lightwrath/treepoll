@@ -3,7 +3,7 @@ import WindowHeader from "../components/WindowHeader"
 import Button from "./Button"
 import config from "../config"
 import Timer from "../components/Timer"
-import { returnSegmentResult } from "../utils/sequenceEngine"
+import { clientReturnChannel } from "../utils/sequenceEngine"
 
 export default function PollingSegment({ segmentData }) {
   const [selected, setSelected] = useState(null)
@@ -16,6 +16,7 @@ export default function PollingSegment({ segmentData }) {
         <div>
           {Object.keys(segmentData.options).map(key => (
             <Button
+              key={key}
               style={{
                 ...(selected === key && { backgroundColor: config.highlight }),
                 margin: "20px 0px",
@@ -31,7 +32,7 @@ export default function PollingSegment({ segmentData }) {
       )}
       <Timer 
         startingSeconds={segmentData.time || 0} 
-        onEnd={async () => await returnSegmentResult(segmentData, selected)}
+        onEnd={async () => await clientReturnChannel(segmentData.key + " " + selected)}
       />
     </div>
   )

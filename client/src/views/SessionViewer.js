@@ -11,7 +11,13 @@ export default function SessionViewer() {
     async function startSequenceEngine() {
       const sequence = await fetchSequenceData()
       setSequenceFeed([await initialiseEngine(sequence)])
-      document.body.addEventListener("sequenceEngine", event => setSequenceFeed(prev => [ event.detail, ...prev ]))
+      document.body.addEventListener("sequenceEngine", event => setSequenceFeed(prev => [ 
+        {
+          ...event.detail, 
+          id: [event.detail.key] + sequenceFeed.length
+        },
+        ...prev 
+    ]))
     }
     startSequenceEngine()
   }, [])
@@ -22,19 +28,19 @@ export default function SessionViewer() {
     </div>
   )
 
-  return sequenceFeed.map(segment => {
-    if (segment.type === "poll") return (
-      <div style={{width: "800px"}}>
+  return sequenceFeed.map(segment => (
+    <div style={{width: "800px"}} key={segment.id}>
+      {segment.type === "poll" && (
         <PollingSegment
           segmentData={segment}
         />
-      </div>
-    )
-    return (
-      <div style={{width: "800px"}}>
-        <WindowHeader titleText={segment.title}/>
-        <p>{segment.description}</p>
-      </div>
-    )
-  })
+      )}
+      {!segment.type && (
+        <>
+          <WindowHeader titleText={segment.title}/>
+          <p>{segment.description}</p>
+        </>
+      )}
+    </div>
+  ))
 }

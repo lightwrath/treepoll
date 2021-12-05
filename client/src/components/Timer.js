@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 export default function Timer({ startingSeconds, onEnd }) {
-  const [time, setTime] = useState()
+  const [time, setTime] = useState(startingSeconds)
   const secondsTimer = useRef()
   
   useEffect(() => {
-    setTime(startingSeconds)
     secondsTimer.current = setInterval(() => setTime(prevTime => prevTime - 1), 1000)
-  }, [startingSeconds])
+  }, [])
 
   useEffect(() => {
     if (time <= 0) {
