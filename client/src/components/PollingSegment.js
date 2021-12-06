@@ -3,7 +3,7 @@ import WindowHeader from "../components/WindowHeader"
 import Button from "./Button"
 import config from "../config"
 import Timer from "../components/Timer"
-import { clientReturnChannel } from "../utils/sequenceEngine"
+import { clientReturnChannel } from "../utils/sessionEngine"
 
 export default function PollingSegment({ segmentData }) {
   const [selected, setSelected] = useState(null)
@@ -31,7 +31,7 @@ export default function PollingSegment({ segmentData }) {
         </div>
       )}
       <Timer 
-        startingSeconds={segmentData.time || 0} 
+        unixStopTime={segmentData.uxStop || 0} 
         onEnd={async () => await clientReturnChannel(segmentData.id + " " + selected)}
       />
     </div>

@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-export default function Timer({ startingSeconds, onEnd }) {
-  const [time, setTime] = useState(startingSeconds)
+export default function Timer({ unixStopTime, onEnd }) {
+  const getTimeInSeconds = () => ((unixStopTime - Date.now()) / 1000).toFixed()
+
+  const [time, setTime] = useState(getTimeInSeconds())
   const secondsTimer = useRef()
-  
+
   useEffect(() => {
-    secondsTimer.current = setInterval(() => setTime(prevTime => prevTime - 1), 1000)
+    secondsTimer.current = setInterval(() => setTime(getTimeInSeconds()), 1000)
   }, [])
 
   useEffect(() => {
@@ -17,7 +19,7 @@ export default function Timer({ startingSeconds, onEnd }) {
 
   return (
     <div>
-      {time}
+      {time > 0 ? time : 0}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { demoSequence, demoServerUnitTime, demoServerEvents } from "../utils/demoData"
+import { demoSequence, demoServerUnitTime, demoServerSignals } from "../utils/demoData"
 import { getSessionId } from "../utils/generalUtils"
 
 let isDemoMode = false
@@ -14,10 +14,10 @@ export async function fetchServerUnixTime() {
   if (isDemoMode) return demoServerUnitTime
 }
 
-export async function fetchServerEvents() {
-  if (getSessionId() === "demo") return demoServerEvents()
+export async function fetchSignals() {
+  if (getSessionId() === "demo") return demoServerSignals()
 }
 
 export async function postSelection(event) {
-  if (getSessionId() === "demo") return demoServerEvents(event)
+  if (getSessionId() === "demo") return demoServerSignals(event)
 }

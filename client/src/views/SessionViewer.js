@@ -1,23 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import WindowHeader from "../components/WindowHeader"
 import PollingSegment from "../components/PollingSegment"
-import { fetchSequenceData } from "../api/sequence"
-import { initialiseEngine } from "../utils/sequenceEngine"
+import { initialiseEngine } from "../utils/sessionEngine"
 
 export default function SessionViewer() {
   const [sequenceFeed, setSequenceFeed] = useState([])
 
   useEffect(() => {
     async function startSequenceEngine() {
-      const sequence = await fetchSequenceData()
-      setSequenceFeed([await initialiseEngine(sequence)])
-      document.body.addEventListener("sequenceEngine", event => setSequenceFeed(prev => [ 
-        {
-          ...event.detail, 
-          uid: [event.detail.id] + prev.length
-        },
-        ...prev 
-    ]))
+      document.body.addEventListener("sessionFeed", feed => setSequenceFeed(feed.detail))
+      await initialiseEngine()
     }
     startSequenceEngine()
   }, [])

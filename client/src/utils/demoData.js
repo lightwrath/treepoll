@@ -37,27 +37,27 @@ export const demoSequence = {
   },
 }
 
-export const demoServerUnitTime = Date.now() + (Math.floor(Math.random() * (1200000 - 0 + 1) - 600000))
+export const demoServerUnitTime = Date.now() + (Math.floor(Math.random() * (6000 - 0 + 1) - 3000))
 
-let demoEventList = [{
+let demoSignalList = [{
   eventId: "start",
   time: Date.now() - 1000
 }]
-export function demoServerEvents(eventToAdd) {
-  if (eventToAdd) {
-    demoEventList = [
+export function demoServerSignals(signalToAdd) {
+  if (signalToAdd) {
+    demoSignalList = [
       {
-        eventId: eventToAdd,
+        eventId: signalToAdd,
         details: {
-          [eventToAdd]: 1024,
+          [signalToAdd]: 1024,
           "Other Option": 512,
           "Less Popular Option": 256,
           "Undecided": 128
         },
         time: Date.now()
       },
-      ...demoEventList
+      ...demoSignalList
     ]
   }
-  return demoEventList
+  return demoSignalList
 }
