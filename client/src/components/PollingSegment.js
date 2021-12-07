@@ -12,7 +12,19 @@ export default function PollingSegment({ segmentData }) {
     <div>
       <WindowHeader titleText={segmentData.title}/>
       <p>{segmentData.description}</p>
-      {segmentData.options && (
+      {segmentData.result ? (
+        <div>
+          {Object.keys(segmentData.result).map((key, index) => (
+            <div
+              style={{
+                display: 'block'
+              }}
+            >
+              {`${key}: ${segmentData.result[key]} ${key.includes(selected)} ${index === 0}`}
+            </div>
+          ))}
+        </div>
+      ) : (
         <div>
           {segmentData.options.map(option => (
             <Button
@@ -30,10 +42,12 @@ export default function PollingSegment({ segmentData }) {
           ))}
         </div>
       )}
-      <Timer 
-        unixStopTime={segmentData.uxStop || 0} 
-        onEnd={async () => await clientReturnChannel(segmentData.id + " " + selected)}
-      />
+      {!segmentData.results && (
+        <Timer 
+          unixStopTime={segmentData.uxStop || 0} 
+          onEnd={async () => await clientReturnChannel(segmentData.id + " " + selected)}
+        />
+      )}
     </div>
   )
 }

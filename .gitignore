@@ -1,3 +1,4 @@
 client/node_modules
 client/public
+client/build
 server/node_modules

@@ -3,6 +3,8 @@ import WindowHeader from '../components/WindowHeader'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
 
+import { demoSequence } from "../utils/demoData"
+
 export default function Welcome() {
   const [sessionId, setSeessionId] = useState("")
 
@@ -28,7 +30,20 @@ export default function Welcome() {
           margin: "20px auto",
           display: "block"
         }}
-        onClick={() => console.log(sessionId)}
+        onClick={async () => {
+          let sessionIdToLaunch = sessionId
+          if (!sessionIdToLaunch) {
+            const response = await fetch("/session", {
+              method: "POST",
+              body: JSON.stringify(demoSequence),
+              headers: {
+                "Content-Type": "application/json"
+              }
+            })
+            sessionIdToLaunch = await response.text()
+          }
+          window.location.href = "/" + sessionIdToLaunch
+        }}
       >
         {sessionId ? "Let's go!" : "New session"}
       </Button>
