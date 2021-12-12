@@ -8,10 +8,14 @@ export async function fetchSequenceData() {
     isDemoMode = true
     return demoSequence
   }
+  const response = await fetch(`/session/${getSessionId()}/all`)
+  return response.json()
 }
 
 export async function fetchServerUnixTime() {
   if (isDemoMode) return demoServerUnitTime
+  const response = await fetch('/time')
+  return response.text()
 }
 
 export async function fetchSignals() {

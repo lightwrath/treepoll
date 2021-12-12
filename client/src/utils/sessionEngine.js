@@ -22,6 +22,7 @@ export async function initialiseEngine(sequenceImport) {
   pushToFeed(sessionData.config.default)
   console.log("Set initial session config", sessionData)
   const serverTime = await fetchServerUnixTime()
+  console.log(serverTime)
   unixTimeOffset = serverTime - Date.now()
   console.log("Unix time offset for server is", unixTimeOffset)
   setInterval(async () => {
