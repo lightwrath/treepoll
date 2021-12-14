@@ -9,32 +9,51 @@ export default function Admin() {
 
   return (
     <div style={{ width: "800px" }} >
-      <WindowHeader titleText="Admin Interface"/>
-      <p>First create the session configuration</p>
-      <Textarea
-        name="config"
-        placeholder="{}"
-        onChange={e => setConfigInput(e.value)}
-      />
-      <Button
-        onClick={async () => {
-          const validConfig = configInput.replace(/(\r\n|\n|\r)/gm, "")
-          console.log(validConfig)
-          JSON.parse(validConfig)
-          JSON.stringify(validConfig)
-          const response = await fetch("/session", {
-            method: "POST",
-            body: validConfig,
-            headers: {
-              "Content-Type": "application/json"
+      {sessionId ? (
+        <>
+          <WindowHeader titleText={sessionId} />
+          <p>{`${window.location.protocol}//${window.location.hostname}/${sessionId}`}</p>
+          {Object.keys(configInput).map(key => {
+            if (configInput[key].type === "button") {
+              return (
+                <Button
+                  onClick={() => console.log(configInput[key])}
+                >
+                  {configInput[key].title}
+                </Button>
+              )
             }
-          })
-          setSeessionId(await response.text())
-        }}
-      >
-        Start Session
-      </Button>
-      {sessionId}
+          })}
+        </>
+      ) : (
+        <>
+          <WindowHeader titleText="Admin Interface"/>
+          <p>First create the session configuration</p>
+          <Textarea
+            name="config"
+            placeholder="{}"
+            onChange={e => setConfigInput(e.value)}
+          />
+          <Button
+            onClick={async () => {
+              const validConfig = configInput.replace(/(\r\n|\n|\r)/gm, "")
+              JSON.parse(validConfig)
+              JSON.stringify(validConfig)
+              const response = await fetch("/session", {
+                method: "POST",
+                body: validConfig,
+                headers: {
+                  "Content-Type": "application/json"
+                }
+              })
+              setSeessionId(await response.text())
+              setConfigInput(JSON.parse(validConfig))
+            }}
+          >
+            Start Session
+          </Button>
+        </>
+      )}
     </div>
   )
 }
