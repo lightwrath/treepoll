@@ -2,12 +2,23 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
 const app = express()
+const session = require('express-session')
 
 const port = process.env.PORT || 3000
 const jsonParser = bodyParser.json()
 const sessionList = {}
 
 app.use(express.static(path.join(__dirname, '../client/build')))
+
+app.use(session({
+  secret: 'treepollSessions',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false,
+    maxAge: 60000
+  }
+}))
 
 app.listen(port, () => {
   console.log("Server listening on port " + port)
@@ -22,6 +33,9 @@ app.get('/', (req, res) => {
 app.post('/session', jsonParser,(req, res) => {
   console.log("Recieved new session request", req.body)
   const sessionId = Date.now().toString(36) + Math.random().toString(36).substring(2)
+  console.log(req.session)
+  req.session.authedSessionIds = [...req.session.authedSessionIds || [], sessionId]
+  console.log(req.session)
   console.log(req.body)
   sessionList[sessionId] = req.body
   res.end(sessionId)
