@@ -1,12 +1,13 @@
 const express = require('express')
+const session = require('express-session')
 const bodyParser = require('body-parser')
 const path = require('path')
+const { initialise, addSession, addToFeed } = require("./sessionEventHub")
+
 const app = express()
-const session = require('express-session')
 
 const port = process.env.PORT || 3000
 const jsonParser = bodyParser.json()
-const sessionList = {}
 
 app.use(express.static(path.join(__dirname, '../client/build')))
 
@@ -30,12 +31,11 @@ app.get('/', (req, res) => {
 })
 
 // API
-app.post('/session', jsonParser,(req, res) => {
+app.post('/session', jsonParser, (req, res) => {
   console.log("Recieved new session request", req.body)
   const sessionId = Date.now().toString(36) + Math.random().toString(36).substring(2)
   req.session.authedSessionIds = [...req.session.authedSessionIds || [], sessionId]
-  console.log(req.body)
-  sessionList[sessionId] = req.body
+  addSession(req.body, sessionId)
   res.end(sessionId)
 })
 
@@ -51,14 +51,8 @@ app.get('/session/:sessionId/all', (req, res) => {
   res.end()
 })
 
-app.get('/session/:sessionId', (req, res) => {
-  console.log("API endpoint here")
-  res.send(config)
-})
-
-app.get('/session/:sessionId/signals', (req, res) => {
-  console.log("API endpoint here")
-  res.send(config)
+app.post('/session/:sessionId/feed', jsonParser, (req, res) => {
+  addToFeed(req.body, req.params.sessionId)
 })
 
 app.get('/time', (req, res) => {

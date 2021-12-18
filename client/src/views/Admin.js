@@ -17,7 +17,13 @@ export default function Admin() {
             if (configInput[key].type === "button") {
               return (
                 <Button
-                  onClick={() => console.log(configInput[key])}
+                  onClick={async () => {
+                    const response = await fetch(`/session/${sessionId}/feed`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(configInput[key])
+                    })
+                  }}
                 >
                   {configInput[key].title}
                 </Button>

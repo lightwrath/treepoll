@@ -1,31 +1,43 @@
 {
-    "default": {
-    "triggers": [ "betting All-in", "stop" ],
+  "default": {
     "title": "Waiting for Dealer",
     "description": "Starting soon"
   },
   "betting": {
     "type": "poll",
-    "triggers": [ "playeractions Raise" ],
     "title": "Betting",
     "description": "Place your bets now",
     "time": 15,
-    "options": [ "5", "8", "13", "21", "34", "55", "89", "All-in" ]
+    "options": [
+      { "title": "5", "trigger": "stop" },
+      { "title": "8", "trigger": "stop" },
+      { "title": "13", "trigger": "stop" },
+      { "title": "21", "trigger": "stop" },
+      { "title": "34", "trigger": "stop" },
+      { "title": "55", "trigger": "stop" },
+      { "title": "89", "trigger": "stop" },
+      { "title": "All-in", "trigger": "stop" }
+    ]
   },
   "playeractions": {
     "type": "poll",
-    "triggers": [ "start" ],
     "title": "Player Actions",
     "description": "What do?",
     "time": 20,
-    "options": [ "Check", "Raise", "Fold" ]
+    "options": [
+      { "title": "Check", "trigger": "stop" },
+      { "title": "Raise", "trigger": "betting" },
+      { "title": "Fold", "trigger": "stop" }
+    ]
   },
   "start": { 
     "type": "button",
-    "title": "Start"
+    "title": "Start",
+    "trigger": "playeractions"
   },
   "stop": {
     "type": "button",
-    "title": "Stop"
+    "title": "Stop",
+    "trigger": "default"
   }
 }
