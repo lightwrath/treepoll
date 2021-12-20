@@ -2,9 +2,11 @@ const express = require('express')
 const session = require('express-session')
 const bodyParser = require('body-parser')
 const path = require('path')
-const { initialise, addSession, addToFeed } = require("./sessionEventHub")
+const { sessionList, initialise } = require("./sessionEventHub")
 
 const app = express()
+
+const sessionEventHub = initialise()
 
 const port = process.env.PORT || 3000
 const jsonParser = bodyParser.json()
@@ -32,10 +34,9 @@ app.get('/', (req, res) => {
 
 // API
 app.post('/session', jsonParser, (req, res) => {
-  console.log("Recieved new session request", req.body)
   const sessionId = Date.now().toString(36) + Math.random().toString(36).substring(2)
   req.session.authedSessionIds = [...req.session.authedSessionIds || [], sessionId]
-  addSession(req.body, sessionId)
+  sessionEventHub.emit("sessionAdd", req.body, sessionId)
   res.end(sessionId)
 })
 
@@ -52,7 +53,7 @@ app.get('/session/:sessionId/all', (req, res) => {
 })
 
 app.post('/session/:sessionId/feed', jsonParser, (req, res) => {
-  addToFeed(req.body, req.params.sessionId)
+  sessionEventHub.emit("feedAdd", req.body, req.params.sessionId)
 })
 
 app.get('/time', (req, res) => {

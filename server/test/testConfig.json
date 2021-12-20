@@ -30,6 +30,13 @@
       { "title": "Fold", "trigger": "stop" }
     ]
   },
+  "testloop": {
+    "type": "message",
+    "title": "Looping",
+    "description": "i'm triggering myself",
+    "time": 10,
+    "trigger": "testloop"
+  },
   "start": { 
     "type": "button",
     "title": "Start",
@@ -39,5 +46,10 @@
     "type": "button",
     "title": "Stop",
     "trigger": "default"
+  },
+  "loop": {
+    "type": "button",
+    "title": "Test loop",
+    "trigger": "testloop"
   }
 }

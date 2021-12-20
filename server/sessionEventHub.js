@@ -1,23 +1,29 @@
+/* sessionEventHub usage:
+ * sessionAdd: [config object, session id] - Add a new session or reset a session to a given ID.
+ * feedAdd: [config segment key, session id] - Add to feed from config.
+ */
+
 const EventEmitter = require('events')
 const sessionList = {}
-setInterval(() => console.info(new Date().toISOString(), JSON.stringify(sessionList, undefined, 2)), 60000)
 const eventHub = new EventEmitter()
 
 let unixTimeOffset = 0
 
-function initialise() {
+function initialise(msOffSet) {
+  unixTimeOffset = msOffSet || 0
   return eventHub
 }
 
-function addSession(config, id) {
+eventHub.on("sessionAdd", (config, id) => {
   sessionList[id] = {
     config,
     feed: []
   }
-  addToFeed(config.default, id)
-}
+  log(id, "sessionAdd", sessionList[id], 'info')
+  eventHub.emit("feedAdd", config.default, id)
+})
 
-function addToFeed(event, id) {
+eventHub.on("feedAdd", (event, id) => {
   const prevFeed = sessionList[id].feed[0]
   function getStartTime() {
     if (prevFeed && prevFeed.endTime) return prevFeed.endTime
@@ -36,14 +42,15 @@ function addToFeed(event, id) {
     },
     ...sessionList[id].feed
   ]
+  log(id, "feedAdd", sessionList[id].feed[0], 'info')
   if (getEndTime()) activeFeedMonitor(id)
-}
+})
 
 function activeFeedMonitor(id) {
+  const activeFeed = sessionList[id].feed[0]
   function triggerFunction() {
     if (activeFeed.trigger) processTrigger(activeFeed.trigger, id)
   }
-  const activeFeed = sessionList[id].feed[0]
   if (activeFeed.endTime) {
     const msRemaining = activeFeed.endTime - Date.now()
     if (msRemaining > 0) {
@@ -56,7 +63,14 @@ function activeFeedMonitor(id) {
 
 function processTrigger(trigger, id) {
   const configSegmentTriggered = sessionList[id].config[trigger]
-  addToFeed(configSegmentTriggered, id)
+  eventHub.emit("feedAdd", configSegmentTriggered, id)
 }
 
-module.exports = { initialise, addSession, addToFeed }
+function log(sessionId, action, payload, trace) {
+  if (trace === "info") {
+    console.info(`\x1b[34m${sessionId} - ${action}\x1b[0m: `)
+    console.log(payload)
+  }
+}
+
+module.exports = { initialise, sessionList }
